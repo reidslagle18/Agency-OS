@@ -11,6 +11,7 @@ describe('Persistent database',()=>{
  it('validates a batch before writing anything',async()=>{const c=fixture();await expect(saveCompanies([c,{...fixture(),name:''}])).rejects.toThrow();expect((await allCompanies()).some(x=>x.id===c.id)).toBe(false);});
  it('deduplicates within imports and against saved records',()=>{const c=fixture();expect(deduplicate([c,{...c,id:'another'}],[]).unique).toHaveLength(1);expect(deduplicate([{...c,id:'new'}],[c]).skipped).toBe(1);});
  it('uses license identity when available',()=>{const c={...fixture(),license:'OCM-TEST'};expect(deduplicate([{...c,name:'Renamed company'}],[c]).skipped).toBe(1);});
+ it('does not overwrite existing IDs when restoring renamed records',()=>{const c=fixture();expect(deduplicate([{...c,name:'Changed backup name'}],[c]).unique).toHaveLength(0);});
 });
 describe('CSV and backup',()=>{
  it('handles quoted commas, multiline notes and Unicode',()=>{const c={...fixture(),name:'Fictional, test café',notes:'First line\nSecond line'};const p=parseCsv(exportCsv([c]));expect(p.errors).toHaveLength(0);expect(p.records[0].name).toBe(c.name);expect(p.records[0].notes).toBe(c.notes);});

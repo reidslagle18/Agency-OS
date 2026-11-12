@@ -1,6 +1,6 @@
 import {timingSafeEqual} from 'node:crypto';
 import {z} from 'zod';
-import {evidenceSchema,findingSchema} from '../src/model';
+import {evidenceSchema,findingSchema} from '../src/model.js';
 type Req={method?:string;headers:Record<string,string|string[]|undefined>;body:unknown};
 type Res={setHeader:(k:string,v:string)=>void;status:(n:number)=>Res;json:(v:unknown)=>void};
 const bodySchema=z.object({name:z.string().min(1).max(200),evidence:z.array(evidenceSchema).min(1).max(20)});
@@ -14,7 +14,7 @@ export default async function handler(req:Req,res:Res){
   const supplied=typeof req.headers.authorization==='string'?req.headers.authorization.replace(/^Bearer /,''):'';
   const a=Buffer.from(supplied),b=Buffer.from(secret);
   if(a.length!==b.length || !timingSafeEqual(a,b))return res.status(401).json({error:'Enter the correct workspace access token in Settings.'});
-  if(JSON.stringify(req.body).length>150000)return res.status(413).json({error:'Evidence is too large.'});
+  if(JSON.stringify(req.body??'').length>150000)return res.status(413).json({error:'Evidence is too large.'});
   const parsed=bodySchema.safeParse(req.body);
   if(!parsed.success)return res.status(400).json({error:'Invalid company or evidence.'});
   const evidence=parsed.data.evidence.filter(e=>e.verified);

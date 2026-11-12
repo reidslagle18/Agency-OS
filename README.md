@@ -16,7 +16,9 @@ Use the stable Vercel production address provided after deployment. No local ser
 - Seven-stage CRM pipeline with stage changes and value totals.
 - CSV preview, per-row validation, duplicate detection, 5 MB / 5,000-row limits, and filtered export with spreadsheet formula protection.
 - Full JSON backup and validated, non-overwriting merge restore including evidence, findings, and drafts.
-- On-demand discovery through New York's official OCM public API. Review records and add individually, with license number/status/source/retrieval date. No preloaded or fabricated leads.
+- Automatic one-time loading of nine real Oklahoma businesses researched from primary company websites on November 12, 2026, with no claims of licensing or brand deficiencies.
+- Optional OpenAI public web discovery for Oklahoma, run manually or once daily when the browser app opens; new candidates are saved automatically. Requires API credentials, bills provider charges, and does not run with the browser closed. Search-source URL validation enforces traceability; company facts remain unverified until human review.
+- On-demand additional-market discovery through New York's official OCM public API. Review records and add individually, with license number/status/source/retrieval date. No preloaded or fabricated leads.
 - User-supplied source evidence, human verification, and transparent score with area coverage. Evidence can be removed or unverified; changes invalidate analysis and drafts.
 - Optional OpenAI analysis with schema validation and exact citation matching; unsupported quotes are rejected. Generated interpretations still require human judgment.
 - Evidence-based editable outreach template, approval before copy, and do-not-contact blocking. There is no email sending integration or automatic outreach.
@@ -30,7 +32,7 @@ API: `https://data.ny.gov/resource/jskf-tt3q.json`. Requests use pages of 100 or
 
 ## AI configuration (optional)
 
-Core functions, discovery, scoring, and outreach templates need no paid API credentials.
+Core functions, the dated Oklahoma starter research, NY public-data discovery, scoring, and outreach templates need no paid API credentials. Ongoing Oklahoma web discovery and AI analysis require an OpenAI key and workspace token.
 
 In Vercel project Settings > Environment Variables add:
 
@@ -38,6 +40,7 @@ In Vercel project Settings > Environment Variables add:
 | --- | --- |
 | `OPENAI_API_KEY` | Your paid OpenAI project key, server only |
 | `OPENAI_MODEL` | Optional model supporting Responses API structured output; defaults to `gpt-4.1-mini` |
+| `OPENAI_RESEARCH_MODEL` | Optional web-search/structured-output model; defaults to `gpt-4.1-mini` |
 | `AGENCY_ACCESS_TOKEN` | A random workspace password of at least 24 characters |
 
 Redeploy after changing variables. Enter only the workspace access token in the app's Settings. **Never enter an OpenAI API key in the app or commit credentials.** It is held in session storage until that browser tab session ends.
@@ -61,7 +64,8 @@ Deploy with `vercel --yes` after linking, or `vercel --prod --yes` for the stabl
 ## Limitations
 
 - Single browser workspace, no cloud database or authenticated team access.
-- No automatic discovery outside NY; other regulator/provider records need authorized CSV import.
+- Oklahoma live web discovery is implemented but needs credentials; it is not a verified OMMA bulk feed. OMMA moved license checks to its public verification portal. There is no documented OMMA bulk API connected. Other regulator/provider records can use authorized CSV import.
+- No unattended discovery while the browser is closed; hosted storage and scheduling remain future work.
 - Analysis uses provided text and observations, not website screenshots or packaging images.
 - Exact quote matching enforces traceability, not the correctness of a model's interpretation.
 - Drafts use a transparent template rather than a paid AI writing call. Replace sender placeholders and check contact permission before sending elsewhere.
@@ -71,4 +75,19 @@ Deploy with `vercel --yes` after linking, or `vercel --prod --yes` for the stabl
 
 ## Validation
 
-25 automated tests cover persistence/CRUD, atomic input validation, duplicate matching, CSV round trips and errors, formula escaping, backups, scoring, outreach blocking, official source mapping, missing/incorrect credentials, and rejection of unsupported AI citations. Live paid AI success requires credentials and billing and is not claimed as tested against the provider.
+29 automated tests cover persistence/CRUD, atomic input validation, duplicate matching, CSV round trips and errors, formula escaping, backups, scoring, outreach blocking, official source mapping, missing/incorrect credentials, and rejection of unsupported AI citations. Live paid AI success requires credentials and billing and is not claimed as tested against the provider.
+
+## Oklahoma source research
+
+Nine source-backed research candidates are stored in `src/oklahoma.ts`, not fabricated demo records. Source URLs and excerpts are attached to each candidate. No email addresses, license numbers, brand deficiencies, or sales scores are inferred. Resonant Cultivation and Mosaic describe a related operation and should be treated as related accounts. The one-time starter load does not restore intentionally deleted records.
+
+OMMA verification entry point: https://oklahoma.gov/omma/businesses/omma-verify.html. Licensing must be checked separately. Live search uses OpenAI web search and only accepts result source URLs present in the actual search tool response. URL matching does not prove every model-written fact, so candidates remain Research.
+
+## Animation review
+
+| Before | After | Why |
+| --- | --- | --- |
+| Bootstrap color transitions could interpolate during a theme switch | Instant control and theme state changes | Frequent operational actions stay immediate and both theme contrast checks remain stable |
+
+No scroll listeners, entry animations, or automatic decorative motion.
+
